@@ -141,7 +141,8 @@ if [ ! "$STAGE" == "" ]; then
     fi
 
     if [ "$SFDX_BUILDPACK_DEBUG" == "true" ] ; then
-      invokeCmd "sfdx force:package:installed:list -u \"$TARGET_SCRATCH_ORG_ALIAS\""
+      #invokeCmd "sfdx force:package:installed:list -u \"$TARGET_SCRATCH_ORG_ALIAS\""
+      invokeCmd "sfdx force:package:installed:list -u huborg"
     fi
 
   else
