@@ -143,7 +143,7 @@ if [ ! "$STAGE" == "" ]; then
     if [ "$SFDX_BUILDPACK_DEBUG" == "true" ] ; then
       #invokeCmd "sfdx force:package:installed:list -u \"$TARGET_SCRATCH_ORG_ALIAS\""
       #invokeCmd "sfdx force:package:installed:list -u huborg"
-      invokeCmd "sfdx force:package:installed:list -u $HEROKU_DEV_APP_NAME"
+      invokeCmd "sfdx force:package:installed:list -u $DEV_USERNAME"
       
       #TODO!!!. Figure out hwo to get the right org. DEV
     fi
