@@ -161,10 +161,10 @@ then
 
     # create package version
     CMD="sfdx force:package:version:create -p $SFDX_PACKAGE_ID -k test1234 --wait 100 --json | jq -r .result.SubscriberPackageVersionId"
-   
+    
     SFDX_PACKAGE_VERSION_ID=$(eval $CMD)
     debug "SFDX_PACKAGE_VERSION_ID: $SFDX_PACKAGE_VERSION_ID"
-
+  
   else
 
     log "Calling $pkgVersionCreateScript"
