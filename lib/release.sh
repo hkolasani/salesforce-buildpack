@@ -128,7 +128,9 @@ if [ ! "$STAGE" == "" ]; then
       log "Installing package version $SFDX_PACKAGE_NAME ..."
 
       #invokeCmd "sfdx force:package:install --noprompt -p \"$SFDX_PACKAGE_VERSION_ID\" -u \"$TARGET_SCRATCH_ORG_ALIAS\" -k test1234 --wait 1000 --publishwait 1000"
-      invokeCmd "sfdx force:package:install --noprompt -p \"$SFDX_PACKAGE_VERSION_ID\" -u huborg -k test1234 --wait 1000 --publishwait 1000"
+      #invokeCmd "sfdx force:package:install --noprompt -p \"$SFDX_PACKAGE_VERSION_ID\" -u huborg -k test1234 --wait 1000 --publishwait 1000"
+      invokeCmd "sfdx force:package:install --noprompt -p \"$SFDX_PACKAGE_VERSION_ID\" -u $DEV_USERNAME -k test1234 --wait 1000 --publishwait 1000"
+      #TODO!! Use appropriate Org alaias above -u option 
 
     else
 
