@@ -41,6 +41,7 @@ debug "SFDX_INSTALL_PACKAGE_VERSION: $SFDX_INSTALL_PACKAGE_VERSION"
 debug "SFDX_CREATE_PACKAGE_VERSION: $SFDX_CREATE_PACKAGE_VERSION"
 debug "SFDX_PACKAGE_NAME: $SFDX_PACKAGE_NAME"
 debug "SFDX_PACKAGE_VERSION_ID: $SFDX_PACKAGE_VERSION_ID"
+debug "SFDX_ORG_ALIAS: $SFDX_ORG_ALIAS"
 
 whoami=$(whoami)
 debug "WHOAMI: $whoami"
@@ -82,7 +83,7 @@ if [ "$STAGE" == "" ]; then
   invokeCmd "sfdx force:source:push -u $TARGET_SCRATCH_ORG_ALIAS"
 
   # Show scratch org URL
-  if [ "$show_scratch_org_url" == "true" ]; then    
+  if [ "$show_scratch_org_url" == "true" ]; then
     if [ ! "$open_path" == "" ]; then
       invokeCmd "sfdx force:org:open -r -p $open_path"
     else
@@ -99,7 +100,7 @@ if [ ! "$STAGE" == "" ]; then
 
   auth "$vendorDir/sfdxurl" "$SFDX_AUTH_URL" s "$TARGET_SCRATCH_ORG_ALIAS"
 
-  if [ "$SFDX_INSTALL_PACKAGE_VERSION" == "true" ] 
+  if [ "$SFDX_INSTALL_PACKAGE_VERSION" == "true" ]
   then
 
     # Auth to Dev Hub
@@ -109,27 +110,29 @@ if [ ! "$STAGE" == "" ]; then
     # run package install
     if [ ! -f "$pkgVersionInstallScript" ];
     then
-    
+
       # if target stage is production, release the package version
       if [ "$STAGE" == "PROD" ]; then
-      
+
         # get package version id (05i)
         CMD="sfdx force:package:version:list --json | jq '.result[] | select((.SubscriberPackageVersionId) == \"$SFDX_PACKAGE_VERSION_ID\")' | jq -r .Id"
         debug "CMD: $CMD"
         SFDX_PACKAGE_ID=$(eval $CMD)
         debug "SFDX_PACKAGE_ID: $SFDX_PACKAGE_ID"
-      
+
         log "Set package version as released ..."
 
         invokeCmd "sfdx force:package:version:update -i \"$SFDX_PACKAGE_ID\" --noprompt --setasreleased"
 
-      fi    
-    
+      fi
+
       log "Installing package version $SFDX_PACKAGE_NAME ..."
 
       #invokeCmd "sfdx force:package:install --noprompt -p \"$SFDX_PACKAGE_VERSION_ID\" -u \"$TARGET_SCRATCH_ORG_ALIAS\" -k test1234 --wait 1000 --publishwait 1000"
-      invokeCmd "sfdx force:package:install --noprompt -p \"$SFDX_PACKAGE_VERSION_ID\" -u huborg -k test1234 --wait 1000 --publishwait 1000"
-      #TODO!! Use appropriate Org alaias above -u option 
+      #invokeCmd "sfdx force:package:install --noprompt -p \"$SFDX_PACKAGE_VERSION_ID\" -u huborg -k test1234 --wait 1000 --publishwait 1000"
+      #Added $SFDX_ORG_ALIAS.
+      #TODO: Figure out how to add this condig variables into setup.sh that creates the pipeline apps
+      invokeCmd "sfdx force:package:install --noprompt -p \"$SFDX_PACKAGE_VERSION_ID\" -u $SFDX_ORG_ALIAS -k test1234 --wait 1000 --publishwait 1000"
 
     else
 
@@ -143,7 +146,7 @@ if [ ! "$STAGE" == "" ]; then
 
     if [ "$SFDX_BUILDPACK_DEBUG" == "true" ] ; then
       #invokeCmd "sfdx force:package:installed:list -u \"$TARGET_SCRATCH_ORG_ALIAS\""
-      invokeCmd "sfdx force:package:installed:list -u huborg"
+      invokeCmd "sfdx force:package:installed:list -u $SFDX_ORG_ALIAS"
       #TODO!!!. Figure out hwo to get the right org. DEV
     fi
 
@@ -152,7 +155,7 @@ if [ ! "$STAGE" == "" ]; then
     log "Source convert and mdapi deploy"
 
     mdapiDeployScript=bin/mdapi-deploy.sh
-    # run mdapi-deploy script 
+    # run mdapi-deploy script
     if [ ! -f "$mdapiDeployScript" ];
     then
 
