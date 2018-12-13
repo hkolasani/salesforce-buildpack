@@ -41,7 +41,6 @@ debug "SFDX_INSTALL_PACKAGE_VERSION: $SFDX_INSTALL_PACKAGE_VERSION"
 debug "SFDX_CREATE_PACKAGE_VERSION: $SFDX_CREATE_PACKAGE_VERSION"
 debug "SFDX_PACKAGE_NAME: $SFDX_PACKAGE_NAME"
 debug "SFDX_PACKAGE_VERSION_ID: $SFDX_PACKAGE_VERSION_ID"
-debug "SFDX_ORG_ALIAS: $SFDX_ORG_ALIAS"
 
 whoami=$(whoami)
 debug "WHOAMI: $whoami"
@@ -106,6 +105,9 @@ if [ ! "$STAGE" == "" ]; then
     # Auth to Dev Hub
     auth "$vendorDir/sfdxurl" "$SFDX_DEV_HUB_AUTH_URL" d huborg
 
+    # Auth to tarhget Org . NEW/HARI. Use this for install packagwe commands.
+    auth "$vendorDir/sfdxurl" "$SFDX_AUTH_URL" d targetOrg
+
     pkgVersionInstallScript=bin/package-install.sh
     # run package install
     if [ ! -f "$pkgVersionInstallScript" ];
@@ -129,10 +131,7 @@ if [ ! "$STAGE" == "" ]; then
       log "Installing package version $SFDX_PACKAGE_NAME ..."
 
       #invokeCmd "sfdx force:package:install --noprompt -p \"$SFDX_PACKAGE_VERSION_ID\" -u \"$TARGET_SCRATCH_ORG_ALIAS\" -k test1234 --wait 1000 --publishwait 1000"
-      #invokeCmd "sfdx force:package:install --noprompt -p \"$SFDX_PACKAGE_VERSION_ID\" -u huborg -k test1234 --wait 1000 --publishwait 1000"
-      #Added $SFDX_ORG_ALIAS.
-      #TODO: Figure out how to add this condig variables into setup.sh that creates the pipeline apps
-      invokeCmd "sfdx force:package:install --noprompt -p \"$SFDX_PACKAGE_VERSION_ID\" -u $SFDX_ORG_ALIAS -k test1234 --wait 1000 --publishwait 1000"
+      invokeCmd "sfdx force:package:install --noprompt -p \"$SFDX_PACKAGE_VERSION_ID\" -u targetOrg -k test1234 --wait 1000 --publishwait 1000"
 
     else
 
@@ -144,10 +143,9 @@ if [ ! "$STAGE" == "" ]; then
 
     fi
 
-    if [ "$SFDX_BUILDPACK_DEBUG" == "true" ] ; then
+    if [ "$SFDX_BUILDPACK_DEBUG" == "true" ] ; thens
       #invokeCmd "sfdx force:package:installed:list -u \"$TARGET_SCRATCH_ORG_ALIAS\""
-      invokeCmd "sfdx force:package:installed:list -u $SFDX_ORG_ALIAS"
-      #TODO!!!. Figure out hwo to get the right org. DEV
+      invokeCmd "sfdx force:package:installed:list -u targetOrg"
     fi
 
   else
